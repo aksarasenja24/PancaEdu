@@ -9,7 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;1,9..144,500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --ink:#2a2823; --ink-soft:#5f5c53; --ink-faint:#918d80;
+    --ink:#26241f; --ink-soft:#4e4b42; --ink-faint:#7c7869;
     --paper:#fffefc; --bg:#f4f0e7; --bg-2:#ebe4d3;
     --merah:#8a2a38; --merah-deep:#5e1c26; --merah-soft:#f2ddd9;
     --tan:#c2a479; --tan-deep:#9c7d55; --tan-soft:#f0e4d0;
@@ -233,30 +233,56 @@
   .col-title{ font-size:10.7px; color:var(--ink-faint); margin-bottom:9px; font-weight:700; letter-spacing:.03em; }
   .chip{ display:flex; align-items:center; gap:10px; width:100%; padding:12px 13px; margin-bottom:8px; border:1.5px solid var(--line); border-radius:13px; background:var(--paper); font-size:12.4px; text-align:left; transition:all .15s ease; box-shadow:0 2px 8px rgba(42,40,35,.04); }
   .chip svg{ width:21px; height:21px; flex-shrink:0; }
-  .chip:hover{ border-color:var(--ink); }
+  .chip:hover{ border-color:var(--ink); transform:translateX(2px); }
   .chip.selected{ border-color:var(--merah); background:var(--merah-soft); }
-  .chip.correct{ border-color:var(--hijau); background:var(--hijau-soft); cursor:default; }
+  .chip.correct{ border-color:var(--hijau); background:var(--hijau-soft); cursor:default; animation:chipPop .4s ease; }
   .chip.wrong{ animation:shake .3s ease; }
+  @keyframes chipPop{ 0%{ transform:scale(1); } 45%{ transform:scale(1.04); box-shadow:0 6px 16px rgba(44,77,60,.25); } 100%{ transform:scale(1); } }
   @keyframes shake{ 0%,100%{transform:translateX(0);} 25%{transform:translateX(-5px);} 75%{transform:translateX(5px);} }
   .game-done{ margin-top:16px; padding:15px 17px; background:var(--hijau); color:#fff; border-radius:14px; display:none; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; }
   .game-done.show{ display:flex; }
   .game-done button{ background:var(--emas); color:#fff; border:none; padding:9px 17px; border-radius:100px; font-weight:700; font-size:12px; }
   .quiz-progress{ display:flex; gap:6px; margin-bottom:16px; }
-  .quiz-progress span{ height:5px; flex:1; border-radius:100px; background:var(--line); }
-  .quiz-progress span.done{ background:var(--merah); }
-  .quiz-card{ background:var(--paper); border-radius:var(--radius); padding:clamp(17px,4vw,26px); box-shadow:var(--shadow); max-width:640px; }
-  .quiz-num{ font-size:10.7px; color:var(--ink-faint); font-weight:700; margin-bottom:8px; letter-spacing:.03em; }
-  .quiz-q{ font-size:15px; font-weight:700; margin-bottom:16px; line-height:1.5; }
-  .quiz-opt{ display:block; width:100%; text-align:left; padding:11px 13px; border-radius:11px; border:1.5px solid var(--line); background:var(--bg); margin-bottom:7px; font-size:12.6px; transition:all .15s ease; }
-  .quiz-opt:hover{ border-color:var(--ink); }
-  .quiz-opt.correct{ border-color:var(--hijau); background:var(--hijau-soft); font-weight:700; }
+  .quiz-progress span{ height:6px; flex:1; border-radius:100px; background:var(--line); overflow:hidden; position:relative; }
+  .quiz-progress span.done::after{ content:""; position:absolute; inset:0; background:linear-gradient(90deg,var(--merah),var(--emas)); border-radius:100px; }
+  .quiz-card{ position:relative; background:var(--paper); border-radius:var(--radius); padding:clamp(17px,4vw,26px); box-shadow:var(--shadow); max-width:640px;
+    border-top:4px solid var(--merah); overflow:hidden; transition:border-color .3s ease; }
+  .quiz-card.cat-kasus{ border-top-color:var(--hijau); }
+  .quiz-card.cat-harian{ border-top-color:var(--emas); }
+  .q-inner{ animation:qCardIn .35s cubic-bezier(.25,.8,.3,1); }
+  @keyframes qCardIn{ from{ opacity:0; transform:translateY(10px) scale(.98); } to{ opacity:1; transform:translateY(0) scale(1); } }
+  .quiz-num{ display:inline-flex; align-items:center; gap:6px; font-size:10.7px; color:var(--merah-deep); font-weight:700; margin-bottom:12px;
+    letter-spacing:.03em; background:var(--merah-soft); padding:5px 12px; border-radius:100px; }
+  .quiz-card.cat-kasus .quiz-num{ color:var(--hijau); background:var(--hijau-soft); }
+  .quiz-card.cat-harian .quiz-num{ color:var(--merah-deep); background:var(--emas-soft); }
+  .quiz-q{ font-size:15.5px; font-weight:700; margin-bottom:18px; line-height:1.55; }
+  .quiz-opt{ display:flex; align-items:center; gap:12px; width:100%; text-align:left; padding:11px 14px; border-radius:13px; border:1.5px solid var(--line);
+    background:var(--bg); margin-bottom:8px; font-size:12.8px; transition:all .18s ease; }
+  .quiz-opt:hover{ border-color:var(--ink); transform:translateX(3px); }
+  .opt-badge{ width:26px; height:26px; border-radius:50%; background:var(--bg-2); color:var(--ink-soft); font-weight:700; font-size:11.5px;
+    display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:all .18s ease; }
+  .quiz-opt:hover .opt-badge{ background:var(--ink); color:#fff; }
+  .quiz-opt.correct{ border-color:var(--hijau); background:var(--hijau-soft); font-weight:700; animation:optPop .35s ease; }
+  .quiz-opt.correct .opt-badge{ background:var(--hijau); color:#fff; }
   .quiz-opt.wrong{ border-color:var(--merah); background:var(--merah-soft); }
+  .quiz-opt.wrong .opt-badge{ background:var(--merah); color:#fff; }
+  @keyframes optPop{ 0%{ transform:scale(1); } 40%{ transform:scale(1.03); } 100%{ transform:scale(1); } }
   .quiz-opt[disabled]{ cursor:default; }
+  .quiz-opt[disabled]:hover{ transform:none; }
   .quiz-next{ margin-top:11px; background:var(--ink); color:#fff; border:none; padding:10px 20px; border-radius:100px; font-weight:700; font-size:12px; display:none; }
   .quiz-next.show{ display:inline-flex; }
-  .quiz-result{ display:none; background:var(--paper); border-radius:var(--radius); padding:clamp(20px,5vw,30px); box-shadow:var(--shadow); max-width:640px; text-align:left; }
-  .quiz-result.show{ display:block; }
-  .quiz-result .score{ font-size:32px; color:var(--merah); margin-bottom:6px; font-weight:700; }
+  .quiz-result{ display:none; position:relative; overflow:hidden; background:var(--paper); border-radius:var(--radius); padding:clamp(24px,5vw,34px); box-shadow:var(--shadow); max-width:640px; text-align:center; }
+  .quiz-result.show{ display:block; animation:qCardIn .4s cubic-bezier(.25,.8,.3,1); }
+  .quiz-result .confetti-dot{ position:absolute; border-radius:50%; opacity:.5; }
+  .score-ring-wrap{ position:relative; width:140px; height:140px; margin:6px auto 14px; }
+  .score-ring{ width:140px; height:140px; transform:rotate(-90deg); }
+  .score-ring-bg{ fill:none; stroke:var(--bg-2); stroke-width:10; }
+  .score-ring-fill{ fill:none; stroke:url(#scoreGradient); stroke-width:10; stroke-linecap:round; transition:stroke-dashoffset 1s cubic-bezier(.25,.8,.3,1); }
+  .score-ring-text{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .score-ring-emoji{ font-size:28px; margin-bottom:2px; }
+  .score-ring-frac{ font-size:12px; color:var(--ink-faint); font-weight:700; margin-top:2px; }
+  .quiz-result .score{ font-size:20px; color:var(--ink); margin-bottom:8px; font-weight:700; position:relative; z-index:2; }
+  .quiz-result p{ margin-left:auto; margin-right:auto; position:relative; z-index:2; }
   .quiz-result button{ margin-top:11px; background:var(--merah); color:#fff; border:none; padding:10px 20px; border-radius:100px; font-weight:700; font-size:12px; }
   .quiz-daily-note{ background:var(--emas-soft); color:var(--merah-deep); border-radius:12px; padding:11px 15px; font-size:12px; margin-bottom:16px; font-weight:600; }
 
@@ -271,7 +297,9 @@
   .flash-inner.flipped{ transform:rotateY(180deg); }
   .flash-face{ position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; border-radius:20px;
     display:flex; flex-direction:column; align-items:center; justify-content:center; padding:26px; text-align:center; box-shadow:var(--shadow); }
-  .flash-front{ background:linear-gradient(150deg,var(--merah),var(--merah-deep)); color:#fff; }
+  .flash-front{ background:linear-gradient(150deg,var(--merah),var(--merah-deep)); color:#fff; transition:background .3s ease; }
+  .flash-front.set-sila{ background:linear-gradient(150deg,var(--hijau),var(--hijau-deep)); }
+  .flash-front.set-istilah{ background:linear-gradient(150deg,var(--biru),var(--biru-deep)); }
   .flash-back{ background:var(--paper); color:var(--ink); transform:rotateY(180deg); border:1.5px solid var(--line); }
   .flash-tag{ font-size:10.5px; text-transform:uppercase; letter-spacing:.05em; opacity:.75; margin-bottom:10px; }
   .flash-main{ font-size:19px; font-weight:700; line-height:1.3; }
@@ -282,6 +310,16 @@
   .flash-controls{ display:flex; justify-content:space-between; align-items:center; gap:8px; margin-top:14px; }
   .flash-controls button{ background:var(--paper); border:1px solid var(--line); color:var(--ink); padding:9px 14px; border-radius:100px; font-weight:600; font-size:12px; box-shadow:var(--shadow); }
   .flash-controls button:hover{ border-color:var(--ink); }
+
+  /* ---------- ISTILAH TERM HIGHLIGHT ---------- */
+  .term{ color:var(--merah-deep); font-weight:700; cursor:pointer; border-bottom:1.5px dotted var(--merah); padding-bottom:1px; }
+  .term:hover{ background:var(--merah-soft); border-radius:4px; }
+  .term-tooltip{ position:absolute; z-index:200; max-width:260px; background:var(--ink); color:#fff; padding:13px 15px;
+    border-radius:13px; box-shadow:var(--shadow-lg); font-size:12.5px; line-height:1.6; display:none; }
+  .term-tooltip::before{ content:""; position:absolute; top:-6px; left:18px; width:12px; height:12px; background:var(--ink); transform:rotate(45deg); }
+  .term-tooltip-title{ font-weight:700; margin-bottom:5px; color:var(--emas-soft); font-size:11px; text-transform:uppercase; letter-spacing:.04em; }
+  .term-tooltip-body{ color:rgba(255,255,255,0.92); }
+  .term-tooltip-close{ position:absolute; top:8px; right:10px; color:rgba(255,255,255,0.6); cursor:pointer; font-size:14px; line-height:1; }
 
 
   .hero-illus img{ width:100%; height:100%; object-fit:cover; -webkit-mask-image:linear-gradient(to right, transparent 0%, black 28%); mask-image:linear-gradient(to right, transparent 0%, black 28%); }
@@ -634,7 +672,7 @@
             <div><div class="col-title">LAMBANG</div><div id="colSymbols"></div></div>
             <div><div class="col-title">BUNYI SILA</div><div id="colSila"></div></div>
           </div>
-          <div class="game-done" id="gameDone"><span>Semua pasangan benar. Mantap!</span><button onclick="setupGame()">Main lagi</button></div>
+          <div class="game-done" id="gameDone"><span>🎉 Semua pasangan benar. Mantap!</span><button onclick="setupGame()">Main lagi</button></div>
         </div>
         <div class="game-panel" id="panelKasus">
           <p style="margin-bottom:16px;">Cocokkan pertanyaan studi kasus/penalaran di kiri dengan jawaban yang tepat di kanan. Klik satu pertanyaan, lalu klik jawabannya.</p>
@@ -643,7 +681,7 @@
             <div><div class="col-title">PERTANYAAN</div><div id="colKasusQ"></div></div>
             <div><div class="col-title">JAWABAN</div><div id="colKasusA"></div></div>
           </div>
-          <div class="game-done" id="gameKasusDone"><span>Semua pasangan benar. Mantap!</span><button onclick="setupKasusGame()">Main lagi</button></div>
+          <div class="game-done" id="gameKasusDone"><span>🎉 Semua pasangan benar. Mantap!</span><button onclick="setupKasusGame()">Main lagi</button></div>
         </div>
         <div class="game-panel" id="panelFlash">
           <div class="flash-subtabs">
@@ -677,10 +715,7 @@
           <div class="quiz-progress" id="quizProgress"></div>
           <div class="quiz-card" id="quizCard"></div>
           <div class="quiz-result" id="quizResult">
-            <div class="quiz-num">HASIL KUIS</div>
-            <div class="score" id="quizScoreText">0/10</div>
-            <p id="quizScoreDesc">Terus berlatih untuk memahami Pancasila lebih dalam.</p>
-            <button onclick="setupQuiz()">Ulangi kuis</button>
+            <div id="quizResultInner"></div>
           </div>
         </div>
       </section>
@@ -976,6 +1011,7 @@
     flashFlipped = false;
     document.getElementById('flashInner').classList.remove('flipped');
     const item = flashSets[currentFlashSet][flashOrder[flashIdx]];
+    document.getElementById('flashFront').className = 'flash-face flash-front' + (currentFlashSet==='sila' ? ' set-sila' : currentFlashSet==='istilah' ? ' set-istilah' : '');
     document.getElementById('flashFront').innerHTML = `<div class="flash-tag">${item.tagFront}</div><div class="flash-main">${item.front}</div>${item.sub?`<div class="flash-sub">${item.sub}</div>`:''}`;
     document.getElementById('flashBack').innerHTML = `<div class="flash-tag">${item.tagBack}</div><div class="flash-back-text">${item.back}</div>`;
     document.getElementById('flashCounter').textContent = (flashIdx+1) + ' / ' + flashOrder.length;
@@ -1023,6 +1059,7 @@
     document.getElementById('qstUmum').classList.toggle('active', which==='umum');
     document.getElementById('qstKasus').classList.toggle('active', which==='kasus');
     document.getElementById('qstHarian').classList.toggle('active', which==='harian');
+    currentQuizCat = which;
     const note = document.getElementById('quizDailyNote');
     if(which==='harian'){
       quizBank = getDailyQuiz();
@@ -1045,14 +1082,25 @@
   function renderQuizProgress(){
     document.getElementById('quizProgress').innerHTML = quizBank.map((_,i)=>`<span class="${i < quizIdx ? 'done' : ''}"></span>`).join('');
   }
+  const quizCatMeta = {
+    umum: { label:'Kuis Umum', icon:'📘' },
+    kasus: { label:'Studi Kasus', icon:'🧩' },
+    harian: { label:'Kuis Harian', icon:'📅' },
+  };
+  let currentQuizCat = 'umum';
   function renderQuizQuestion(){
     quizAnswered = false;
     const item = quizBank[quizIdx];
+    const meta = quizCatMeta[currentQuizCat] || quizCatMeta.umum;
+    const letters = ['A','B','C','D','E'];
+    document.getElementById('quizCard').className = 'quiz-card cat-' + currentQuizCat;
     document.getElementById('quizCard').innerHTML = `
-      <div class="quiz-num">SOAL ${quizIdx+1} DARI ${quizBank.length}</div>
-      <div class="quiz-q">${item.q}</div>
-      <div id="quizOpts">${item.opts.map((o,i)=>`<button class="quiz-opt" onclick="answerQuiz(${i})">${o}</button>`).join('')}</div>
-      <button class="quiz-next" id="quizNextBtn" onclick="nextQuiz()">${quizIdx===quizBank.length-1?'Lihat hasil':'Soal berikutnya'} →</button>
+      <div class="q-inner">
+        <div class="quiz-num">${meta.icon} ${meta.label} · SOAL ${quizIdx+1} DARI ${quizBank.length}</div>
+        <div class="quiz-q">${item.q}</div>
+        <div id="quizOpts">${item.opts.map((o,i)=>`<button class="quiz-opt" onclick="answerQuiz(${i})"><span class="opt-badge">${letters[i]}</span><span>${o}</span></button>`).join('')}</div>
+        <button class="quiz-next" id="quizNextBtn" onclick="nextQuiz()">${quizIdx===quizBank.length-1?'Lihat hasil':'Soal berikutnya'} →</button>
+      </div>
     `;
   }
   function answerQuiz(i){
@@ -1070,17 +1118,125 @@
     if(quizIdx >= quizBank.length){
       document.getElementById('quizCard').style.display = 'none';
       document.getElementById('quizProgress').style.display = 'none';
+      const pct = Math.round((quizScore / quizBank.length) * 100);
+      const circumference = 2 * Math.PI * 52;
+      const offset = circumference * (1 - pct/100);
+      const tier = pct >= 80 ? { emoji:'🏆', desc:'Luar biasa! Pemahamanmu tentang Pancasila sudah sangat baik.' }
+                 : pct >= 50 ? { emoji:'👍', desc:'Bagus! Terus pelajari materi sejarah, sila, dan ideologi negara untuk lebih mendalam.' }
+                 : { emoji:'📚', desc:'Yuk pelajari lagi halaman Materi, lalu coba kuis ini sekali lagi.' };
+      const dotColors = ['var(--merah)','var(--emas)','var(--hijau)','var(--biru)'];
+      const confetti = Array.from({length:10}).map((_,i)=>{
+        const size = 6 + (i%3)*4;
+        const top = (i*37) % 90;
+        const left = (i*53) % 96;
+        return `<span class="confetti-dot" style="width:${size}px;height:${size}px;top:${top}%;left:${left}%;background:${dotColors[i%dotColors.length]};"></span>`;
+      }).join('');
+      document.getElementById('quizResultInner').innerHTML = `
+        ${confetti}
+        <div class="quiz-num" style="position:relative;z-index:2;">HASIL KUIS</div>
+        <div class="score-ring-wrap">
+          <svg class="score-ring" viewBox="0 0 120 120">
+            <defs><linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#8a2a38"/><stop offset="100%" stop-color="#c1922f"/>
+            </linearGradient></defs>
+            <circle class="score-ring-bg" cx="60" cy="60" r="52"/>
+            <circle class="score-ring-fill" cx="60" cy="60" r="52" style="stroke-dasharray:${circumference};stroke-dashoffset:${circumference};" id="scoreRingFill"/>
+          </svg>
+          <div class="score-ring-text">
+            <div class="score-ring-emoji">${tier.emoji}</div>
+            <div class="score-ring-frac">${quizScore}/${quizBank.length}</div>
+          </div>
+        </div>
+        <div class="score">${pct}% benar</div>
+        <p>${tier.desc}</p>
+        <button onclick="setupQuiz()">Ulangi kuis</button>
+      `;
       document.getElementById('quizResult').classList.add('show');
-      document.getElementById('quizScoreText').textContent = quizScore + '/' + quizBank.length;
-      const desc = quizScore >= Math.ceil(quizBank.length*0.8) ? 'Luar biasa! Pemahamanmu tentang Pancasila sudah sangat baik.'
-                 : quizScore >= Math.ceil(quizBank.length*0.5) ? 'Bagus! Terus pelajari materi sejarah, sila, dan ideologi negara untuk lebih mendalam.'
-                 : 'Yuk pelajari lagi halaman Materi, lalu coba kuis ini sekali lagi.';
-      document.getElementById('quizScoreDesc').textContent = desc;
+      requestAnimationFrame(()=>{ requestAnimationFrame(()=>{
+        const fillEl = document.getElementById('scoreRingFill');
+        if(fillEl) fillEl.style.strokeDashoffset = offset;
+      }); });
       return;
     }
     renderQuizProgress(); renderQuizQuestion();
   }
 
+  /* ================= HIGHLIGHT ISTILAH & TOKOH PENTING ================= */
+  const glossaryMap = {};
+  istilahList.forEach(i => { glossaryMap[i.front] = i.back; });
+
+  function highlightGlossaryIn(rootEl){
+    if(!rootEl) return;
+    const terms = Object.keys(glossaryMap).sort((a,b)=> b.length-a.length);
+    if(terms.length===0) return;
+    const escaped = terms.map(t => t.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'));
+    const regex = new RegExp('(' + escaped.join('|') + ')', 'g');
+    const used = new Set();
+    const walker = document.createTreeWalker(rootEl, NodeFilter.SHOW_TEXT, {
+      acceptNode(n){
+        if(n.parentElement && n.parentElement.closest('.term')) return NodeFilter.FILTER_REJECT;
+        if(n.parentElement && ['SCRIPT','STYLE'].includes(n.parentElement.tagName)) return NodeFilter.FILTER_REJECT;
+        return NodeFilter.FILTER_ACCEPT;
+      }
+    });
+    const nodes = [];
+    let n;
+    while((n = walker.nextNode())) nodes.push(n);
+    nodes.forEach(textNode => {
+      const text = textNode.nodeValue;
+      regex.lastIndex = 0;
+      let match, lastIndex = 0, any = false;
+      const frag = document.createDocumentFragment();
+      while((match = regex.exec(text)) !== null){
+        const term = match[0];
+        const start = match.index, end = start + term.length;
+        if(start > lastIndex) frag.appendChild(document.createTextNode(text.slice(lastIndex, start)));
+        if(!used.has(term)){
+          used.add(term);
+          const span = document.createElement('span');
+          span.className = 'term';
+          span.textContent = term;
+          span.addEventListener('click', function(e){ showTermTooltip(e, term, glossaryMap[term]); });
+          frag.appendChild(span);
+          any = true;
+        } else {
+          frag.appendChild(document.createTextNode(term));
+        }
+        lastIndex = end;
+      }
+      if(any){
+        if(lastIndex < text.length) frag.appendChild(document.createTextNode(text.slice(lastIndex)));
+        textNode.parentNode.replaceChild(frag, textNode);
+      }
+    });
+  }
+  function showTermTooltip(e, term, defText){
+    e.stopPropagation();
+    let tip = document.getElementById('globalTermTooltip');
+    if(!tip){
+      tip = document.createElement('div');
+      tip.id = 'globalTermTooltip';
+      tip.className = 'term-tooltip';
+      document.body.appendChild(tip);
+    }
+    tip.innerHTML = `<span class="term-tooltip-close" onclick="document.getElementById('globalTermTooltip').style.display='none'">×</span><div class="term-tooltip-title">${term}</div><div class="term-tooltip-body">${defText || ''}</div>`;
+    tip.style.display = 'block';
+    const rect = e.target.getBoundingClientRect();
+    const tipWidth = Math.min(260, window.innerWidth - 32);
+    tip.style.maxWidth = tipWidth + 'px';
+    let left = rect.left + window.scrollX;
+    if(left + tipWidth > window.innerWidth - 16) left = window.innerWidth - tipWidth - 16;
+    if(left < 16) left = 16;
+    tip.style.left = left + 'px';
+    tip.style.top = (rect.bottom + window.scrollY + 10) + 'px';
+  }
+  document.addEventListener('click', function(e){
+    const tip = document.getElementById('globalTermTooltip');
+    if(tip && tip.style.display==='block' && !e.target.classList.contains('term')) tip.style.display='none';
+  });
+  highlightGlossaryIn(document.getElementById('panel-sejarah'));
+  highlightGlossaryIn(document.getElementById('tokohList'));
+  highlightGlossaryIn(document.getElementById('panel-ideologi'));
 </script>
 </body>
 </html>
